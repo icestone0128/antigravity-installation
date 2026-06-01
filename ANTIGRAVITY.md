@@ -5,7 +5,7 @@
 專案名稱：antigravity_installation
 專案用途：AntiGravity 懶人包設定與測試專案
 主要工作目錄：/Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/antigravity_installation
-GitHub repo：https://github.com/icestone0128/antigravity-lazy-pack
+GitHub repo：https://github.com/icestone0128/antigravity-installation
 預設 branch：main
 
 ## Obsidian 對應筆記
