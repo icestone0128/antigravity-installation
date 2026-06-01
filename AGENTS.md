@@ -1,4 +1,4 @@
-# antigravity_installation - ANTIGRAVITY.md
+# antigravity_installation - AGENTS.md
 
 ## 專案入口
 
