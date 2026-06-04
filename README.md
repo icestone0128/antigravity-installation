@@ -36,5 +36,4 @@ AI 會自動讀取 `SKILL.md`（安裝入口），列出 6 個技能，問你要
 ## 相關系列
 
 - Codex 懶人包：https://github.com/mathruffian-dot/codex-lazy-packs
-- Claude Code 懶人包：https://github.com/mathruffian-dot/claude-code-lazy-packs
 - OpenCode 懶人包：https://github.com/mathruffian-dot/opencode-lazy-packs
