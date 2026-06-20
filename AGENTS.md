@@ -21,7 +21,6 @@ Obsidian vault：/Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gma
 - 開工時讀本檔、讀 Obsidian 駕駛艙、檢查 Git 狀態。
 - 收工時更新 Obsidian，必要時更新本檔，檢查 diff 後只提交相關檔案。
 - 不把每日流水帳寫進本檔。
-- README.md 已用 symlink 指向本檔。未來有任何需要新增的專案說明或規則內容，請直接修改本檔。
 
 ## 專案使用方式與相關系列
 
