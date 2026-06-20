@@ -263,13 +263,13 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 
 ## 六、開工 / 收工 / 新專案初始化
 
-Anti-Gravity 可使用專案根目錄的 `ANTIGRAVITY.md` 作為 AI 工作規則入口。它應記錄固定規則、路徑、專案邊界與 Do / Don't；進度、踩坑、每日紀錄應放 Obsidian 專案駕駛艙。
+Anti-Gravity 可使用專案根目錄的 `AGENTS.md` 作為 AI 工作規則入口。它應記錄固定規則、路徑、專案邊界與 Do / Don't；進度、踩坑、每日紀錄應放 Obsidian 專案駕駛艙。
 
 ### 開工
 
 使用者說「開工」時，AI 應：
 
-1. 讀取專案根目錄的 `ANTIGRAVITY.md` 或同等規則檔。
+1. 讀取專案根目錄的 `AGENTS.md` 或同等規則檔。
 2. 讀取 Obsidian 專案駕駛艙。
 3. 執行 `git status` 與最近 commit 檢查。
 4. 回報目前狀態與建議下一步。
@@ -281,7 +281,7 @@ Anti-Gravity 可使用專案根目錄的 `ANTIGRAVITY.md` 作為 AI 工作規則
 
 1. 檢查是否有敏感資料：API key、token、憑證、NotebookLM 匯出清單、學生真名。
 2. 更新 Obsidian 專案駕駛艙：完成事項、下一步、踩坑。
-3. 只有固定規則或路徑改變時才更新 `ANTIGRAVITY.md`。
+3. 只有固定規則或路徑改變時才更新 `AGENTS.md`。
 4. 執行 `git status` 與 diff 檢查。
 5. 只 stage 本次相關檔案，不使用無差別 `git add .`。
 6. 產生 commit message，確認後 commit / push。
@@ -301,7 +301,7 @@ Anti-Gravity 可使用專案根目錄的 `ANTIGRAVITY.md` 作為 AI 工作規則
 
 接著建立或補齊：
 
-- `ANTIGRAVITY.md`
+- `AGENTS.md`
 - `README.md`
 - `.gitignore`
 - Git repo
@@ -312,10 +312,10 @@ Anti-Gravity 可使用專案根目錄的 `ANTIGRAVITY.md` 作為 AI 工作規則
 
 ---
 
-## 建議的 ANTIGRAVITY.md 範本
+## 建議的 AGENTS.md 範本
 
 ```markdown
-# <專案名稱> - ANTIGRAVITY.md
+# <專案名稱> - AGENTS.md
 
 ## 專案入口
 
@@ -358,7 +358,7 @@ Obsidian vault：
 - GitHub：已登入 / 待登入 / 失敗
 - Firebase：已登入 / 待登入 / 未使用
 - Obsidian：已連接 / 待設定 / 失敗
-- 規則檔：ANTIGRAVITY.md 已建立 / 已更新 / 未建立
+- 規則檔：AGENTS.md 已建立 / 已更新 / 未建立
 - Git 狀態：乾淨 / 有未提交變更
 - 下一步：
 ```

@@ -1,4 +1,4 @@
-# antigravity_installation - ANTIGRAVITY.md
+# antigravity_installation - AGENTS.md
 
 ## 專案入口
 
@@ -21,6 +21,28 @@ Obsidian vault：/Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gma
 - 開工時讀本檔、讀 Obsidian 駕駛艙、檢查 Git 狀態。
 - 收工時更新 Obsidian，必要時更新本檔，檢查 diff 後只提交相關檔案。
 - 不把每日流水帳寫進本檔。
+- README.md 已用 symlink 指向本檔。未來有任何需要新增的專案說明或規則內容，請直接修改本檔。
+
+## 專案使用方式與相關系列
+
+### 專案使用方式
+
+- **方式一：直接叫 AI 協助安裝（推薦）**
+  把這行貼給你的 AI agent：
+  ```text
+  這是 AntiGravity 懶人包 https://github.com/mathruffian-dot/antigravity-lazy-pack
+  請讀取 repo 內容，列出所有可用的懶人包，問我要裝哪些。
+  ```
+  AI 會自動讀取 `SKILL.md`（安裝入口），列出技能並協助安裝。
+
+- **方式二：手動開啟設定檔**
+  1. 開啟 `01-antigravity-lazypack.md`。
+  2. 把文件內容交給 Anti-Gravity，依序完成環境檢查、OAuth 登入與 MCP 設定。
+
+### 相關系列
+
+- Codex 懶人包：https://github.com/mathruffian-dot/codex-lazy-packs
+- OpenCode 懶人包：https://github.com/mathruffian-dot/opencode-lazy-packs
 
 ## 不要做
 
