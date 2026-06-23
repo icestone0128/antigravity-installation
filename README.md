@@ -12,13 +12,13 @@
 
 ## 專案使用方式
 
-### 方式一：直接叫 AI 協助安裝（推薦）
+### 方式一：直接叫 AI 協助安裝設定（推薦）
 把這行貼給您的 AI agent：
 ```text
-這是 AntiGravity 懶人包 https://github.com/mathruffian-dot/antigravity-lazy-pack
-請讀取 repo 內容，列出所有可用的懶人包，問我要裝哪些。
+這是 AntiGravity 懶人包 https://github.com/icestone0128/antigravity-installation
+請讀取 repo 內容並依據 SKILL.md 引導我完成服務連接與工作流程設定。
 ```
-AI 會自動讀取 `SKILL.md`，列出可用技能並引導您進行安裝。
+AI 會自動讀取 `SKILL.md`，並引導您進行相關的環境檢查、服務連接與開收工設定。
 
 ### 方式二：手動開啟設定檔
 1. 開啟 `01-antigravity-lazypack.md`。
