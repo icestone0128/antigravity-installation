@@ -1,6 +1,6 @@
 # Anti-Gravity 懶人包 #01：服務連接與工作流程設定
 
-> 版本：v1.6
+> 版本：v1.7
 > 更新日期：2026-06-24
 > 語系偏好：繁體中文（Taiwan）
 
@@ -153,7 +153,11 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 
 ## 四、開工 / 收工 / 新專案初始化工作流程 (Symlinks 與自動化)
 
-在完成前面的連接後，執行 `./setup.sh` 將會把全域技能（例如開工、收工、專案初始化、個人助理等）透過 symlink 指向 `codex_symlink`，讓您的配置在第二台電腦上直接生效。
+在執行任何全域技能之前，**必須優先執行 `./setup.sh` 以建立軟連結 (Symlink) 指向 `codex_symlink`**。軟連結建立成功後，AI 助理才能在新電腦中自動載入以下兩個**互相呼應與關聯**的核心全域技能：
+- **個人助手設定 (`arry-assistant`)**：載入您的跨專案偏好、偏好記憶與個人助手資料層。
+- **專案初始化工作模式 (`project-init-sync`)**：建立標準雙層資料結構與工作規則。
+
+接著，即可安全地使用這些技能來執行開工、收工與新專案初始化。
 
 ### 開工
 
@@ -172,7 +176,7 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 1. 檢查是否有敏感資料：API key、token、憑證、學生真名。
 2. 更新 Obsidian 專案駕駛艙：完成事項、下一步、踩坑。
 3. 只有固定規則或路徑改變時才更新 `AGENTS.md`。
-4. 執行 `git status` 與 diff 檢查。
+4. 執行 `git status` 與 diff 檢查.
 5. 只 stage 本次相關檔案，不使用無差別 `git add .`。
 6. 產生 commit message，確認後 commit / push。
 7. 回報 Obsidian、規則檔與 GitHub 同步結果。
@@ -195,6 +199,30 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 - `.gitignore`
 - Git repo
 - Obsidian 專案駕駛艙
+
+---
+
+## 五、全域技能健檢與三方同步驗證 (必要步驟)
+
+為了確保 AI Agent 在第二台電腦上擁有完整且無障礙的工作能力，AI 助理在設定完成後**必須執行以下健檢與三方同步驗證**：
+
+### 1. 驗證全域 Skills/MCP/CLI 可用性
+- 掃描全域所有 Skill (`~/.codex/skills/` 或 `~/.gemini/config/plugins/codex/skills/`)，確認其中提及的所有 plug-in、API、MCP、CLI 均已安裝並可正常連線與呼叫。
+
+### 2. 三方相容性校驗 (相容 Codex/AntiGravity，清除 Claude)
+- 複查「全域 Skill 文檔 (`codex_symlink/skills`)」、「LazyPack 安裝檔 (本專案 `01-antigravity-lazypack.md`)」與「Obsidian 知識庫/駕駛艙」這三者：
+  - 確認皆相容於 Codex 或 AntiGravity 的設定與路徑。
+  - **徹底清除所有舊有 Claude 相關字眼與殘留設定** (例如移除對舊 `CLAUDE.md` 的引用或排除 Claude 的提示語)。
+  - 確保這三者的核心內容與路徑是 100% 同步且一致的。
+
+### 3. 沙盒限制排除
+- 執行健檢或操作時，若遇到 AI 助理沙盒寫入/讀取限制，**必須立刻修改配置，將該限制路徑新增到沙盒規則中**（例如修改 `~/.codex/config.toml` 或 `~/.gemini/config/` 中的 `writable_roots` 或是 sandbox paths），避免後續執行相同動作時還需要繞路或手動干預。
+
+### 4. 疑難排解與參考資料
+- **如果在執行本章節或上述步驟時遇到任何環境、連線或權限問題，請直接參考 `Github Codex Installation 的 lazy pack 路徑` 中的對應文件進行排查與恢復：**
+  - [09-個人助手設定.md](file:///Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/codex_installation/lazy-pack/09-個人助手設定.md)
+  - [10-專案初始化工作模式.md](file:///Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/codex_installation/lazy-pack/10-專案初始化工作模式.md)
+  - [16-Codex-全域-Skills-跨裝置同步.md](file:///Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/codex_installation/lazy-pack/16-Codex-全域-Skills-跨裝置同步.md)
 
 ---
 
@@ -242,6 +270,9 @@ Obsidian vault：
 
 - GitHub：已登入 / 待登入 / 失敗
 - Obsidian：已連接 / 待設定 / 失敗
+- 全域 Symlinks 與載入 (arry-assistant, project-init-sync)：已完成 / 失敗
+- 全域 Skills / MCP / CLI 健檢：已通過 / 有問題
+- 三方相容性 (移除 Claude/路徑同步)：已完成 / 失敗
 - 規則檔：AGENTS.md 已建立 / 已更新 / 未建立
 - Git 狀態：乾淨 / 有未提交變更
 - 下一步：
