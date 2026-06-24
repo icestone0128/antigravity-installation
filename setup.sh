@@ -287,6 +287,33 @@ for dir in "${LOCAL_DIRS[@]}"; do
   fi
 done
 
+# ==========================================
+# 7. 部署預設知識架構範本
+# ==========================================
+echo -e "\n${YELLOW}[步驟 6] 部署預設知識架構範本...${NC}"
+if [ -d "$USER_SYM_ROOT/knowledge" ]; then
+  TEMPLATE_FILES=(
+    "context-management-strategy.md"
+    "verification-checklist.md"
+    "subagent-strategy.md"
+    "parallelization-strategy.md"
+    "advanced-memory-learning.md"
+  )
+  
+  for tfile in "${TEMPLATE_FILES[@]}"; do
+    if [ -f "200_Reference/templates/$tfile" ]; then
+      if [ ! -f "$USER_SYM_ROOT/knowledge/$tfile" ]; then
+        cp "200_Reference/templates/$tfile" "$USER_SYM_ROOT/knowledge/"
+        echo -e "  已部署知識文件: ${GREEN}$tfile${NC}"
+      else
+        echo -e "  知識文件已存在 (略過，防覆寫): $tfile"
+      fi
+    fi
+  done
+else
+  echo -e "${RED}警告: 找不到全域知識庫目錄 '$USER_SYM_ROOT/knowledge'，略過部署。${NC}"
+fi
+
 # 完成提示
 echo -e "\n${BLUE}==================================================${NC}"
 echo -e "${GREEN}🎉 懶人包環境配置與建置完成！${NC}"
@@ -294,6 +321,8 @@ echo -e "1. 全域軟連結 (Symlink) 建立成功"
 echo -e "2. Obsidian Vault 對接完成 (${GREEN}防覆寫模式啟用${NC})"
 echo -e "3. Gemini API Key 安全配置就緒"
 echo -e "4. 本地專案層資料夾初始化完成"
+echo -e "5. 預設知識架構範本部署完成 (${GREEN}防覆寫模式啟用${NC})"
 echo -e ""
 echo -e "${YELLOW}請重啟您的 AI 助理以加載設定，並接續最後的健檢步驟！${NC}"
 echo -e "${BLUE}==================================================${NC}"
+
