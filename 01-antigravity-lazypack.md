@@ -10,61 +10,79 @@
 
 ---
 
-## 一、安裝與連接基礎服務 (必要前置環境準備)
+## 一、安裝與連接基礎服務 (必要前置環境準備 - 免 Homebrew 手動下載與安裝流程)
 
-在進行任何 Symlink 設定前，必須先完成實體同步環境、筆記工具與 MCP 連線的準備。這是您的 AI 助理能讀取過往所有記錄的唯一物理先決條件。
+在進行任何 Symlink 對接前，請依序手動完成以下軟體安裝與 MCP 配置。這是讓您在新電腦上成功加載雲端全域配置與 Obsidian 第二大腦記錄的物理先決條件。
 
-### 1. 安裝 Homebrew (macOS 套件管理器，可選但極度推薦)
-啟動 Terminal，執行以下指令安裝 Homebrew：
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+### 1. 安裝 Node.js 與 npm (Obsidian MCP 運行底層)
+- **目的**：提供 `npx` 與全球套件管理環境，這是運行 `mcpvault` 與其他 AI 助理工具 the 底層依賴。
+- **下載指引**：請前往 [Node.js 官方網站 (推薦下載 LTS 版本)](https://nodejs.org/) 下載 macOS `.pkg` 安裝程式，雙擊執行安裝。
+- **驗證環境**：在 Terminal 中執行以下指令，確認安裝成功：
+  ```bash
+  node -v
+  npm -v
+  ```
 
-### 2. 一鍵安裝基礎應用與開發依賴
-使用 Brew 自動化安裝 Google Drive、Obsidian、Git 以及 GitHub CLI：
-```bash
-brew install --cask google-drive obsidian
-brew install git gh
-```
-*(手動替代方案：您亦可手動前往 [Google Drive 電腦版官網](https://www.google.com/drive/download/) 與 [Obsidian 官網](https://obsidian.md/) 下載並手動安裝)*
+### 2. 安裝 Google Drive 電腦版並同步雲端檔案
+- **目的**：將您雲端硬碟中的全域資源母資料夾 `codex_symlink` 和第二大腦資料夾 `secondbrain` 同步至本機。
+- **下載指引**：前往 [Google Drive 電腦版官方下載頁](https://www.google.com/drive/download/) 下載 macOS `.dmg` 安裝程式，打開掛載後將應用程式拖移至「應用程式 (Applications)」資料夾。
+- **雲端同步與掛載**：
+  1. 啟動 Google Drive 電腦版並登入您的 Google 帳號。
+  2. 確認 macOS 的本地實體掛載點（預設位於 `/Users/你的系統使用者名稱/Library/CloudStorage/GoogleDrive-你的信箱/我的雲端硬碟/`，在 Finder 左側側邊欄「位置」亦會顯示）已建立。
+  3. **關鍵等待**：確認該目錄下的 `codex_symlink` 與 `secondbrain` 資料夾已**完全同步下載至本地電腦**。
 
-### 3. 登入 Google Drive 並確認雲端同步
-- 啟動並登入您的 **Google Drive 電腦版** 帳號。
-- **關鍵等待**：請確認 macOS 的本地掛載點（例如 `~/Library/CloudStorage/GoogleDrive-你的帳號/`）已出現在 Finder 中，且您在雲端上的 `codex_symlink` 和二腦資料夾（例如 `secondbrain`）已**完全同步至本機**。
+### 3. 安裝 Obsidian Desktop 並開啟現有二腦
+- **目的**：本機筆記管理與專案駕駛艙。
+- **下載指引**：前往 [Obsidian 官方網站](https://obsidian.md/) 下載 macOS `.dmg` 安裝檔，安裝並開啟。
+- **開啟現有二腦**：
+  1. 在 Obsidian 歡迎畫面選擇 **「開啟現有倉庫 (Open folder as vault)」**。
+  2. 選擇已同步至本地的二腦資料夾路徑（如：`/Users/你的系統使用者名稱/Library/CloudStorage/GoogleDrive-你的信箱/我的雲端硬碟/secondbrain`）。
+  3. 確認過往所有的筆記、工作流程與專案駕駛艙在介面中成功加載。
 
 ### 4. 安裝與註冊 Obsidian MCP
-- 全域安裝 `mcpvault` 伺服器：
+- **目的**：讓您的 AI 助理可以直接透過工具 API 讀寫您的 Obsidian 第二大腦。
+- **安裝指令**：開啟 Terminal，執行以下指令全域安裝 `mcpvault` 伺服器：
   ```bash
   npm install -g @bitbonsai/mcpvault
   ```
-- 開啟本機 AI 助理的 MCP 設定檔（例如 `~/.gemini/config/mcp_config.json` 或本機 `mcp_config.json`），寫入以下 `obsidian` 設定：
-  ```json
-  {
-    "mcpServers": {
-      "obsidian": {
-        "command": "/opt/homebrew/bin/mcpvault",  // 若在 macOS Brew 環境，亦可使用 "mcpvault"
-        "args": ["/absolute/path/to/your/secondbrain"]
-      }
-    }
-  }
+- **配置 MCP 伺服器**：
+  1. 開啟本機 AI 助理的 MCP 設定檔（例如 `~/.gemini/config/mcp_config.json` 或 `~/.codex/config.toml`）。
+  2. 在 `mcpServers` 的 `obsidian` 設定中，填入 `mcpvault` 執行檔及您的 Obsidian Vault 本地實體絕對路徑：
+     ```json
+     {
+       "mcpServers": {
+         "obsidian": {
+           "command": "mcpvault",
+           "args": ["/Users/你的系統使用者名稱/Library/CloudStorage/GoogleDrive-你的信箱/我的雲端硬碟/secondbrain"]
+         }
+       }
+     }
+     ```
+     *(註：在 macOS 中，若 PATH 未能正確加載 global npm bin，command 亦可填寫為絕對路徑如 `/usr/local/bin/mcpvault` 或 `/Users/你的使用者/.npm-global/bin/mcpvault`)*
+
+### 5. 安裝 Git 與 GitHub CLI (`gh`) 並登入
+- **目的**：進行專案與全域設定的版本控制、自動同步以及 PR 提交。
+- **Git 手動下載**：前往 [Git 官方網站 (macOS downloads)](https://git-scm.com/downloads) 下載 macOS 官方安裝程式。或者在 Terminal 直接輸入 `git --version`，系統若偵測到未安裝，會彈出視窗提示安裝「Xcode Command Line Tools」，點擊安裝即可取得系統原生 `git`。
+- **GitHub CLI (`gh`) 手動下載**：
+  1. 前往 [GitHub CLI 官網](https://cli.github.com/) 或 [GitHub CLI Releases 頁面](https://github.com/cli/cli/releases) 下載 macOS 預編譯的 `.zip` 壓縮檔（如 `gh_*_macOS_amd64.zip` 或 `arm64.zip`）。
+  2. 解壓縮後，將 `bin/gh` 執行檔拖移或移動至系統 PATH 目錄下（例如 `/usr/local/bin/`）。
+- **登入與驗證**：在 Terminal 中執行以下指令：
+  ```bash
+  gh auth login --web --git-protocol https
+  gh auth status
   ```
-  *(請將 args 中的路徑替換為您在 Google Drive 本地同步掛載點底下的 `secondbrain` 實體絕對路徑)*
 
-### 5. 在 Obsidian 中開啟現有二腦
-- 啟動 **Obsidian** 筆記軟體。
-- 選擇 **「開啟現有倉庫 (Open folder as vault)」**，並指向已同步的二腦資料夾（例如 `~/Library/CloudStorage/.../secondbrain`）。
-- 確認過往所有的筆記、工作流程與專案駕駛艙在介面中成功加載。
-
-### 6. 登入 GitHub CLI
-```powershell
-gh auth status
-gh auth login --web --git-protocol https
-gh auth status
-```
+### 6. 安裝 Python 3 與相關全域技能依賴
+- **Python 3 & pip**：前往 [Python 官方網站](https://www.python.org/downloads/) 下載 macOS `.pkg` 檔案雙擊安裝，確保 `python3` 與 `pip3` 指令可用。
+- **FFmpeg (影音多媒體渲染依賴)**：前往 [FFmpeg 官網推薦下載頁](https://ffmpeg.org/download.html#build-mac) 下載預編譯的 macOS 靜態執行檔，將 `ffmpeg` 解壓後移動至 `/usr/local/bin/`。
+- **yt-dlp (YouTube 轉錄依賴)**：在 Terminal 中執行以下命令安裝：
+  ```bash
+  pip3 install yt-dlp
+  ```
 
 ### 7. 安全規則
-- 不把 GitHub token 寫進 Markdown、AGENTS、Obsidian 對外筆記 or repo。
-- commit 前先檢查 diff，不要無差別提交。
+- 嚴禁將個人 GitHub token、API keys 寫進 Markdown、AGENTS.md、Obsidian 對外筆記或 commit 中。
+- commit 前務必先檢查 diff，嚴禁自動無差別提交。
 
 ---
 

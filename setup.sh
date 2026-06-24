@@ -19,11 +19,11 @@ echo -e "${BLUE}==================================================${NC}"
 # 0. 物理前置條件引導與互動確認
 # ==========================================
 echo -e "${YELLOW}【重要前置檢查】${NC}"
-echo -e "在開始安裝全域軟連結之前，請務必先完成以下實體步驟："
-echo -e " 1. ${GREEN}安裝並登入 Google Drive 電腦版${NC}（讓雲端檔案能同步掛載到本機）。"
-echo -e " 2. ${GREEN}安裝 Obsidian 筆記軟體${NC}。"
-echo -e " 3. ${GREEN}安裝並在 mcp_config.json 中註冊 Obsidian MCP (mcpvault)${NC}。"
-echo -e " 4. ${GREEN}在 Obsidian 中「開啟現有倉庫 (Open folder as vault)」${NC}，並指向您在 Google Drive 上的二腦目錄（例如 secondbrain ）。"
+echo -e "在開始配置全域 Symlink 之前，請務必確認已手動下載並完成以下前置步驟（免 Homebrew）："
+echo -e " 1. ${GREEN}手動安裝並登入 Google Drive 電腦版${NC}（確保雲端檔案完全同步至本地）。"
+echo -e " 2. ${GREEN}手動安裝 Obsidian 筆記軟體${NC}。"
+echo -e " 3. ${GREEN}手動安裝 Node.js，全域安裝且在 mcp_config.json 中註冊 Obsidian MCP (mcpvault)${NC}。"
+echo -e " 4. ${GREEN}在 Obsidian 中「開啟現有倉庫 (Open folder as vault)」${NC}，並指向已同步之 secondbrain 二腦目錄。"
 echo -e "    * 原因：這能讓這台新電腦的 Obsidian 成功同步並連線您過往的所有記錄與專案駕駛艙。"
 echo -e ""
 
