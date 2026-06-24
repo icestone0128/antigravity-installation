@@ -1,6 +1,6 @@
 # Anti-Gravity 懶人包 #01：服務連接與工作流程設定
 
-> 版本：v2.1
+> 版本：v2.2
 > 更新日期：2026-06-24
 > 語系偏好：繁體中文（Taiwan）
 
@@ -96,7 +96,7 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 
 ## 三、開工 / 收工 / 新專案初始化工作流程 (Symlinks 與自動化)
 
-在執行任何全域技能之前，**必須優先執行 `./setup.sh` 以建立軟連結 (Symlink) 指向 `codex_symlink`**。軟連結建立成功後，AI 助理才能在新電腦中自動載入以下兩個**互相呼應與關聯**的核心全域技能：
+在執行 any 全域技能之前，**必須優先執行 `./setup.sh` 以建立軟連結 (Symlink) 指向 `codex_symlink`**。軟連結建立成功後，AI 助理才能在新電腦中自動載入以下兩個**互相呼應與關聯**的核心全域技能：
 - **個人助手設定 (`arry-assistant`)**：載入您的跨專案偏好、偏好記憶與個人助手資料層。
 - **專案初始化工作模式 (`project-init-sync`)**：建立標準雙層資料結構與工作規則。
 
@@ -121,7 +121,7 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 1. 檢查是否有敏感資料：API key、token、憑證、學生真名。
 2. 更新 Obsidian 專案駕駛艙：完成事項、下一步、踩坑。
 3. 只有固定規則或路徑改變時才更新 `AGENTS.md`。
-4. 執行 `git status` 與 diff 檢查。
+4. 執行 `git status` 與 diff 檢查.
 5. 只 stage 本次相關檔案，不使用無差別 `git add .`。
 6. 產生 commit message，確認後 commit / push。
 7. 回報 Obsidian、規則檔與 GitHub 同步結果。
@@ -171,13 +171,10 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
   - 確保這三者的核心內容與路徑是 100% 同步且一致的。
 
 ### 3. 沙盒限制排除
-- 執行健檢或操作時，若遇到 AI 助理沙盒寫入/讀取限制，**必須立刻修改配置，將該限制路徑新增到沙盒規則中**（例如修改 `~/.codex/config.toml` 或 `~/.gemini/config/` 中的 `writable_roots` 或是 sandbox paths），避免後續執行相同動作時還需要繞路或手動干預。
+- 執行健檢或操作時，若遇到 AI 助理沙盒寫入/讀取限制，**必須立刻修改配置，將該限制路徑新增到沙盒規則中**（例如修改 `~/.codex/config.toml` 或 `~/.gemini/config/` 中的 `writable_roots` 或是 sandbox paths）。**特別是 PIP、NPM、Python 及其相關的實體路徑（如 `~/.npm/`, `~/.pip/`, 以及 Python 與 Node.js 的全局二進位執行檔路徑、環境資料夾與專案工作目錄），都必須被完整列為沙盒排除項目，以確保這些指令、相依庫安裝以及指令調用都能直接、無礙地執行。**
 
 ### 4. 疑難排解與參考資料
-- **如果在執行本章節或上述步驟時遇到任何環境、連線或權限問題，請直接參考 `Github Codex Installation 的 lazy pack 路徑` 中的對應文件進行排查與恢復：**
-  - [09-個人助手設定.md](file:///Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/codex_installation/lazy-pack/09-個人助手設定.md)
-  - [10-專案初始化工作模式.md](file:///Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/codex_installation/lazy-pack/10-專案初始化工作模式.md)
-  - [16-Codex-全域-Skills-跨裝置同步.md](file:///Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/codex_installation/lazy-pack/16-Codex-全域-Skills-跨裝置同步.md)
+- **如果在執行本章節或上述步驟時遇到任何環境、連線、模組或權限問題，請直接參考 `Github Codex Installation 的 lazy pack 路徑` 下的對應文件進行排查與恢復。此專案中所有的技能皆已完整寫入該安裝 Repo 下的整個 `lazy-pack` 資料夾（對應本地路徑：[codex_installation/lazy-pack](file:///Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/codex_installation/lazy-pack/)）。您可以回到該目錄下尋求所有對應安裝檔與修復說明。**
 
 ---
 
