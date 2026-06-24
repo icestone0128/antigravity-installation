@@ -1,12 +1,12 @@
 # Anti-Gravity 懶人包 #01：服務連接與工作流程設定
 
-> 版本：v1.7
+> 版本：v1.8
 > 更新日期：2026-06-24
 > 語系偏好：繁體中文（Taiwan）
 
 這份懶人包的目標，是讓 Anti-Gravity 使用者能安全連接 GitHub 與 Obsidian，並建立「開工 / 收工 / 新專案初始化」工作流程。NotebookLM 與 Firebase 的連線已由全域配置接管，本指引不重複設定。
 
-本文件只放可公開教學的設定流程，不放任何個人帳號 token、密碼或敏感測試專案資訊。
+本文件只放可公開教學的設定流程，不放 any 個人帳號 token、密碼或敏感測試專案資訊。
 
 ---
 
@@ -18,7 +18,7 @@
 - [ ] 已安裝 Node.js / npm
 - [ ] 已安裝 Python 或 `uv`
 - [ ] 有 GitHub 帳號
-- [ ] 已有 Obsidian vault，或知道筆記本資料夾位置
+- [ ] 知道 Obsidian 筆記本 (Vault) 的預計存放路徑 (腳本將會自動為您建置結構)
 
 Windows 快速檢查：
 
@@ -126,36 +126,13 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 
 ---
 
-## 三、生圖
-
-如果 AI 內建生圖工具（如 ImageGen），可直接用自然語言產生圖片，不需要把 OpenAI API key 寫進 repo。
-
-建議提示格式：
-
-```text
-生成一張圖片：
-用途：
-尺寸比例：
-主題：
-畫面內容：
-風格：
-色彩：
-文字：
-限制：
-輸出位置：
-```
-
-注意：
-- 重要中文文字建議後製，生圖模型可能出字錯誤。
-- 專案要引用的圖片請放在專案 `assets/` 或 Obsidian 附件資料夾。
-
----
-
-## 四、開工 / 收工 / 新專案初始化工作流程 (Symlinks 與自動化)
+## 三、開工 / 收工 / 新專案初始化工作流程 (Symlinks 與自動化)
 
 在執行任何全域技能之前，**必須優先執行 `./setup.sh` 以建立軟連結 (Symlink) 指向 `codex_symlink`**。軟連結建立成功後，AI 助理才能在新電腦中自動載入以下兩個**互相呼應與關聯**的核心全域技能：
 - **個人助手設定 (`arry-assistant`)**：載入您的跨專案偏好、偏好記憶與個人助手資料層。
 - **專案初始化工作模式 (`project-init-sync`)**：建立標準雙層資料結構與工作規則。
+
+此處建立的軟連結也同時對接了全域的生圖等技能，為後續測試提供必要基礎。
 
 接著，即可安全地使用這些技能來執行開工、收工與新專案初始化。
 
@@ -176,7 +153,7 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 1. 檢查是否有敏感資料：API key、token、憑證、學生真名。
 2. 更新 Obsidian 專案駕駛艙：完成事項、下一步、踩坑。
 3. 只有固定規則或路徑改變時才更新 `AGENTS.md`。
-4. 執行 `git status` 與 diff 檢查.
+4. 執行 `git status` 與 diff 檢查。
 5. 只 stage 本次相關檔案，不使用無差別 `git add .`。
 6. 產生 commit message，確認後 commit / push。
 7. 回報 Obsidian、規則檔與 GitHub 同步結果。
@@ -199,6 +176,33 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 - `.gitignore`
 - Git repo
 - Obsidian 專案駕駛艙
+
+---
+
+## 四、生圖
+
+在前一步驟中執行 `./setup.sh` 建立軟連結後，全域的生圖技能（如 `image-generator`）已掛載完成，此時 AI 助理即可正常使用生圖功能。
+
+如果 AI 內建生圖工具，可直接用自然語言產生圖片，不需要把 OpenAI API key 寫進 repo。
+
+建議提示格式：
+
+```text
+生成一張圖片：
+用途：
+尺寸比例：
+主題：
+畫面內容：
+風格：
+色彩：
+文字：
+限制：
+輸出位置：
+```
+
+注意：
+- 重要中文文字建議後製，生圖模型可能出字錯誤。
+- 專案要引用的圖片請放在專案 `assets/` 或 Obsidian 附件資料夾。
 
 ---
 
