@@ -122,30 +122,39 @@
 
 ## 四、全域技能健檢與三方同步驗證 (必要步驟)
 
-為了確保 AI Agent 在第二台電腦上擁有完整且無障礙的工作能力，AI 助理在設定完成後**必須執行以下依賴健檢與三方同步驗證**：
+為了確保 AI Agent 在第二台電腦上擁有完整且無障礙的工作能力，AI 助理在設定完成後**必須執行以下依賴健檢與三方同步驗證**，清查全域技能運行環境：
 
-### 1. 驗證全域 Skills / MCP / CLI 依賴可用性
-掃描並確認以下全域技能及相關環境依賴已正確安裝、配置並可正常調用：
-- [ ] **GitHub CLI (`gh`) 狀態**：可用於 repo 同步與 PR 建立（供 `contribute-catalog`, `project-init-sync` 等使用）。
-- [ ] **Node.js 與 npm 環境**：供執行 `mcpvault` 與前端套件建置。
-- [ ] **Playwright 瀏覽器截圖環境**：可正常開啟無頭瀏覽器（供 `playwright`, `social-cards` 等使用）。
-- [ ] **Python 3 與 pip 環境**：供執行備份指令與文字/轉換腳本。
-- [ ] **Poppler / pdfplumber 工具**：可用於 PDF 渲染與資訊提取（供 `pdf`, `doc-to-md` 等使用）。
-- [ ] **FFmpeg 媒體工具**：多媒體編輯與影片渲染正常（供 `hyperframes`, `video-processing-automation` 等使用）。
-- [ ] **yt-dlp 下載器**：用於轉錄 YouTube 資訊（供 `youtube-transcript-collector` 使用）。
-- [ ] **mcpvault (Obsidian MCP) 狀態**：AI 能透過 MCP 成功讀寫二腦檔案。
-- [ ] **個人 API 憑證安全**：API 金鑰安全存放於 `~/.codex/secrets/`（如 `gemini_api_key`）且已被排除在 Git 外。
+### 1. 驗證步驟一已安裝之基礎服務連線狀態
+AI 助理應直接在 Terminal 運行相關指令，或調用 MCP 接口進行連線驗證（無須重複安裝）：
+- [ ] **GitHub CLI (`gh`) 驗證**：運行 `git --version`、`gh auth status`，確認 Git 與 GitHub 登入正常，且 credentials 未受無效 `GITHUB_TOKEN` 污染（供 `contribute-catalog`, `project-init-sync` 使用）。
+- [ ] **Node.js & npm 運行環境**：運行 `node -v`、`npm -v`，確認為正常配置的運行環境。
+- [ ] **Obsidian MCP (`mcpvault`) 狀態**：AI 助理能透過 `obsidian` MCP 讀寫二腦，可直接讀取二腦根目錄的 `AGENTS.md` 以確認連線暢通。
+- [ ] **Google Drive 掛載與二腦對接**：確認 `/Users/你的使用者/Library/CloudStorage/...` 目錄下的 `codex_symlink` 與 `secondbrain` 檔案已正確同步且可被讀取。
 
-### 2. 三方相容性校驗 (相容 Codex/AntiGravity，清除 Claude)
+### 2. 驗證與補充全域技能的進階依賴環境
+清查全域技能所需的 CLI、相依庫或 MCP 服務。若尚未安裝，引導使用者進行補充配置：
+- [ ] **GPT Image Tool (生圖技能) 驗證**：AI 助理必須調用內建的 `image-generator` 或 `imagegen` 進行一次低風險的生圖測試（例如生成一張測試頭像），確認 AI 具備生圖能力並能產出實體圖檔（供 `image-generator`, `visual-note-generator`, `social-cards` 使用）。
+- [ ] **Playwright 瀏覽器截圖環境**：確認無頭瀏覽器環境已安裝且可抓取網頁，若缺失可引導使用者於本地執行 `npx playwright install`（供 `playwright`, `social-cards`, `website-to-hyperframes` 使用）。
+- [ ] **Python 3 與 pip 相關庫**：驗證 `python3 --version`，確認 `pip3 install` 相關依賴正常（供執行備份腳本與文字/轉換腳本使用）。
+- [ ] **Poppler / pdfplumber 工具**：可用於 PDF 渲染與資訊提取（供 `pdf`, `doc-to-md` 使用）。
+- [ ] **FFmpeg 媒體工具**：多媒體編輯與影音合成正常，確認 `/usr/local/bin/ffmpeg` 可用（供 `hyperframes`, `video-processing-automation` 等使用）。
+- [ ] **yt-dlp 下載器**：用於轉錄 YouTube 資訊，確認 `yt-dlp --version` 可用（供 `youtube-transcript-collector` 使用）。
+- [ ] **Heptabase CLI 驗證**：確認 `heptabase --version` 及 Heptabase desktop 內的 Local CLI Server 連線正常（供 `heptabase-cli` 技能使用）。
+- [ ] **Netlify CLI / MCP 驗證**：確認 `netlify --version` 或 Netlify MCP 狀態正常（供 `netlify-deploy` 技能使用）。
+- [ ] **Firebase CLI 驗證**：確認 `npx -y firebase-tools@latest --version` 可用且專案關聯正確（供 Firebase 系列技能使用）。
+- [ ] **Kokoro / TTS 語音合成環境**：語音合成功能與模型配置正常，MPS/CUDA/CPU 運行正常（供 `hyperframes-media` 和 `voxcpm2-voice-cloner` 技能的 TTS 及聲音複製使用）。
+- [ ] **個人 API 憑證安全**：API 金鑰安全存放於 `~/.codex/secrets/`（如 `gemini_api_key`）且已被排除在 Git 外（供 `gemini-free-api` 及全域 API 呼叫使用）。
+
+### 3. 三方相容性校驗 (相容 Codex/AntiGravity，清除 Claude)
 - 複查「全域 Skill 文檔 (`codex_symlink/skills`)」、「LazyPack 本手冊 (`01-antigravity-lazypack.md`)」與「Obsidian 知識庫/駕駛艙」這三者：
   - 確認皆相容於 Codex 或 AntiGravity 的設定與路徑。
   - **徹底清除所有舊有 Claude 相關字眼與殘留設定**。
   - 確保這三者的核心內容與路徑是 100% 同步且一致的。
 
-### 3. 沙盒限制排除
+### 4. 沙盒限制排除
 - 執行健檢或操作時，若遇到 AI 助理沙盒寫入/讀取限制，**必須立刻修改配置，將該限制路徑新增到沙盒規則中**（例如修改本機 `config.toml` 或 AI 助理配置中的 `writable_roots` ）。**特別是 PIP、NPM、Python 及其相關的實體路徑（如 `~/.npm/`, `~/.pip/`, 以及 Python 與 Node.js 的全局二進位執行檔路徑、環境資料夾與專案工作目錄），都必須被完整列為沙盒排除項目，以確保這些指令、相依庫安裝以及指令調用都能直接、無礙地執行。**
 
-### 4. 疑難排解與參考資料
+### 5. 疑難排解與參考資料
 - **如果在執行本步驟或懶人包引導時遇到任何環境、連線、模組或權限問題，請直接參考 GitHub 上的公開說明。本專案中所有技能皆與 Codex Installation 專案的懶人包設計相呼應。您可以隨時回到其 GitHub 遠端倉庫 the `lazy-pack` 目錄尋求完整的設定檔與疑難排解指引：**
   - [GitHub Codex Installation - lazy-pack 目錄](https://github.com/icestone0128/codex-installation/tree/main/lazy-pack)
 
@@ -159,17 +168,24 @@
 - GitHub：已登入 / 待登入 / 失敗
 - Obsidian：已連接 / 待設定 / 失敗
 - 全域 Symlinks 與載入 (arry-assistant, project-init-sync)：已完成 / 失敗
-- 全域 Skills / MCP / CLI 健檢：
-  - GitHub CLI (gh)：[通過 / 失敗]
+- 基礎服務連線驗證：
+  - GitHub CLI (gh) 驗證：[通過 / 失敗]
   - Node.js & npm：[通過 / 失敗]
-  - Playwright：[通過 / 失敗]
+  - mcpvault 連線：[通過 / 失敗]
+- 全域進階相依健檢：
+  - GPT Image Tool (生圖驗證)：[通過 / 失敗]
+  - Playwright (瀏覽器)：[通過 / 失敗]
   - Python 3 & pip：[通過 / 失敗]
   - Poppler (PDF)：[通過 / 失敗]
   - FFmpeg (多媒體)：[通過 / 失敗]
   - yt-dlp (YouTube)：[通過 / 失敗]
-  - mcpvault：[通過 / 失敗]
+  - Heptabase CLI：[通過 / 失敗]
+  - Netlify CLI：[通過 / 失敗]
+  - Firebase CLI：[通過 / 失敗]
+  - Kokoro / TTS 音訊：[通過 / 失敗]
   - API secrets 安全：[通過 / 失敗]
 - 三方相容性 (移除 Claude/路徑同步)：已完成 / 失敗
 - 規則檔：AGENTS.md 已建立 / 已更新 / 未建立
 - Git 狀態：[乾淨 / 有未提交變更]
 ```
+
