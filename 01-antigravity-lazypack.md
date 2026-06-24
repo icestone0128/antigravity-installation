@@ -1,46 +1,12 @@
 # Anti-Gravity 懶人包 #01：服務連接與工作流程設定
 
-> 版本：v2.0
+> 版本：v2.1
 > 更新日期：2026-06-24
 > 語系偏好：繁體中文（Taiwan）
 
 這份懶人包的目標，是讓 Anti-Gravity 使用者能在乾淨的電腦上快速且安全地連接 GitHub 與 Obsidian，並建立「開工 / 收工 / 新專案初始化」工作流程。NotebookLM 與 Firebase 的連線已由全域配置接管，本指引不重複設定。
 
 本文件只放可公開教學的設定流程，不放任何個人帳號 token、密碼或敏感測試專案資訊。
-
----
-
-## 先備條件
-
-- [ ] 已安裝 Anti-Gravity 或可使用 MCP 的 AI 編碼助理
-- [ ] 已安裝 Git
-- [ ] 已安裝 GitHub CLI（`gh`）
-- [ ] 已安裝 Node.js / npm
-- [ ] 已安裝 Python 3 或 `uv`
-- [ ] 已安裝 **FFmpeg** (全域多媒體與影片渲染技能的必要依賴)
-- [ ] 有 GitHub 帳號
-- [ ] 知道 Obsidian 筆記本 (Vault) 的預計存放路徑 (腳本將會自動為您建置結構)
-
-Windows 快速檢查：
-
-```powershell
-git --version
-gh --version
-node --version
-npm.cmd --version
-python --version
-ffmpeg -version
-```
-
-### 快速自動化環境建置 (macOS / Linux)
-
-本專案提供了一鍵設定腳本，可自動完成 GitHub CLI 登入檢查、第二大腦目錄建置、本地專案資料層初始化與全域軟連結建立：
-
-```bash
-./setup.sh
-```
-
-此腳本將協助您完成最基礎的環境連線與目錄建置（包含 `Clippings`、`知識庫` 等）。
 
 ---
 
@@ -84,7 +50,7 @@ git config --global user.email "your-email@example.com"
 C:\Users\<你>\OneDrive\文件\Secondbrain
 ```
 
-使用 `./setup.sh` 腳本時，會在此路徑下為您自動建置以下必要目錄：
+本專案提供了一鍵設定腳本 `./setup.sh`，會在此路徑下為您自動建置以下必要目錄：
 - `Clippings/`
 - `知識庫/` (含 index.md 與 log.md)
 - `每日筆記/`
@@ -134,7 +100,7 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 - **個人助手設定 (`arry-assistant`)**：載入您的跨專案偏好、偏好記憶與個人助手資料層。
 - **專案初始化工作模式 (`project-init-sync`)**：建立標準雙層資料結構與工作規則。
 
-此處建立的軟連結也同時對接了全域的生圖等技能，為後續測試提供必要基礎。
+此處建立的軟連結也同時對接了全域的生圖等技能，為後續測試與健檢提供必要基礎。
 
 接著，即可安全地使用這些技能來執行開工、收工與新專案初始化。
 
@@ -142,7 +108,7 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 
 當您說「開工」時，AI 應：
 
-1. 讀取專案根目錄的 `AGENTS.md` 或同等規則檔。
+1. 讀取專案根目錄 the `AGENTS.md` 或同等規則檔。
 2. 讀取 Obsidian 專案駕駛艙。
 3. 執行 `git status` 與最近 commit 檢查。
 4. 回報目前狀態與建議下一步。
@@ -181,37 +147,12 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 
 ---
 
-## 四、生圖
-
-在步驟三執行 `./setup.sh` 建立軟連結後，全域的生圖技能（如 `image-generator`）已掛載完成。由於該技能為全域共用技能，且**直接呼叫 AI 助理的內建生圖工具，因此不需要配置 OpenAI API key，亦無須安裝額外的 CLI 或套件**。此時 AI 助理即可直接使用生圖功能進行測試。
-
-建議提示格式：
-
-```text
-生成一張圖片：
-用途：
-尺寸比例：
-主題：
-畫面內容：
-風格：
-色彩：
-文字：
-限制：
-輸出位置：
-```
-
-注意：
-- 重要中文文字建議後製，生圖模型可能出字錯誤。
-- 專案要引用的圖片請放在專案 `assets/` 或 Obsidian 附件資料夾。
-
----
-
-## 五、全域技能健檢與三方同步驗證 (必要步驟)
+## 四、全域技能健檢與三方同步驗證 (必要步驟)
 
 為了確保 AI Agent 在第二台電腦上擁有完整且無障礙的工作能力，AI 助理在設定完成後**必須執行以下依賴健檢與三方同步驗證**：
 
 ### 1. 驗證全域 Skills / MCP / CLI 依賴可用性
-掃描並確認以下全域技能提及的核心依賴已正確安裝與配置：
+掃描並確認以下全域技能及相關環境依賴已正確安裝、配置並可正常調用：
 - [ ] **GitHub CLI (`gh`) 狀態**：可用於 repo 同步與 PR 建立（供 `contribute-catalog`, `project-init-sync` 等使用）。
 - [ ] **Node.js 與 npm 環境**：供執行 `mcpvault` 與前端套件建置。
 - [ ] **Playwright 瀏覽器截圖環境**：可正常開啟無頭瀏覽器（供 `playwright`, `social-cards` 等使用）。
@@ -220,6 +161,7 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 - [ ] **FFmpeg 媒體工具**：多媒體編輯與影片渲染正常（供 `hyperframes`, `video-processing-automation` 等使用）。
 - [ ] **yt-dlp 下載器**：用於轉錄 YouTube 資訊（供 `youtube-transcript-collector` 使用）。
 - [ ] **mcpvault (Obsidian MCP) 狀態**：AI 能透過 MCP 成功讀寫二腦檔案。
+- [ ] **全域生圖功能 (`image-generator`)**：測試生圖功能正常。該技能直接呼叫 AI 助理的內建生圖工具，不需要配置 OpenAI API key，亦無須安裝額外的 CLI 或套件。
 - [ ] **個人 API 憑證安全**：API 金鑰安全存放於 `~/.codex/secrets/`（如 `gemini_api_key`）且已被排除在 Git 外。
 
 ### 2. 三方相容性校驗 (相容 Codex/AntiGravity，清除 Claude)
@@ -284,7 +226,6 @@ Obsidian vault：
 - GitHub：已登入 / 待登入 / 失敗
 - Obsidian：已連接 / 待設定 / 失敗
 - 全域 Symlinks 與載入 (arry-assistant, project-init-sync)：已完成 / 失敗
-- 生圖功能驗證：已測試通過 / 失敗
 - 全域 Skills / MCP / CLI 健檢：
   - GitHub CLI (gh)：[通過 / 失敗]
   - Node.js & npm：[通過 / 失敗]
@@ -294,6 +235,7 @@ Obsidian vault：
   - FFmpeg (多媒體)：[通過 / 失敗]
   - yt-dlp (YouTube)：[通過 / 失敗]
   - mcpvault：[通過 / 失敗]
+  - image-generator (生圖)：[通過 / 失敗]
   - API secrets 安全：[通過 / 失敗]
 - 三方相容性 (移除 Claude/路徑同步)：已完成 / 失敗
 - 規則檔：AGENTS.md 已建立 / 已更新 / 未建立
