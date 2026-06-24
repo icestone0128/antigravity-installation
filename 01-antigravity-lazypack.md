@@ -1,149 +1,104 @@
 # Anti-Gravity 懶人包 #01：服務連接與工作流程設定
 
-> 版本：v2.2
+> 版本：v2.6 (優化五大步驟版)
 > 更新日期：2026-06-24
 > 語系偏好：繁體中文（Taiwan）
 
-這份懶人包的目標，是讓 Anti-Gravity 使用者能在乾淨的電腦上快速且安全地連接 GitHub 與 Obsidian，並建立「開工 / 收工 / 新專案初始化」工作流程。NotebookLM 與 Firebase 的連線已由全域配置接管，本指引不重複設定。
+這份懶人包的目標，是讓 Anti-Gravity 使用者能在**完全乾淨的第二台電腦**上，快速且安全地連接 GitHub 與 Obsidian，並建立「開工 / 收工 / 新專案初始化」工作流程。NotebookLM 與 Firebase 的連線已由全域配置接管，本指引不重複設定。
 
 本文件只放可公開教學的設定流程，不放任何個人帳號 token、密碼或敏感測試專案資訊。
 
 ---
 
-## 一、連接 GitHub (必要前置)
+## 一、安裝與連接基礎服務 (必要前置環境準備)
 
-在進行任何遠端技能載入、倉庫同步或軟連結建立前，必須確保 GitHub CLI 能正確連線。
+在進行任何 Symlink 設定前，必須先完成實體同步環境、筆記工具與 MCP 連線的準備。這是您的 AI 助理能讀取過往所有記錄的唯一物理先決條件。
 
-### 登入 GitHub CLI
+### 1. 安裝 Homebrew (macOS 套件管理器，可選但極度推薦)
+啟動 Terminal，執行以下指令安裝 Homebrew：
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
+### 2. 一鍵安裝基礎應用與開發依賴
+使用 Brew 自動化安裝 Google Drive、Obsidian、Git 以及 GitHub CLI：
+```bash
+brew install --cask google-drive obsidian
+brew install git gh
+```
+*(手動替代方案：您亦可手動前往 [Google Drive 電腦版官網](https://www.google.com/drive/download/) 與 [Obsidian 官網](https://obsidian.md/) 下載並手動安裝)*
+
+### 3. 登入 Google Drive 並確認雲端同步
+- 啟動並登入您的 **Google Drive 電腦版** 帳號。
+- **關鍵等待**：請確認 macOS 的本地掛載點（例如 `~/Library/CloudStorage/GoogleDrive-你的帳號/`）已出現在 Finder 中，且您在雲端上的 `codex_symlink` 和二腦資料夾（例如 `secondbrain`）已**完全同步至本機**。
+
+### 4. 安裝與註冊 Obsidian MCP
+- 全域安裝 `mcpvault` 伺服器：
+  ```bash
+  npm install -g @bitbonsai/mcpvault
+  ```
+- 開啟本機 AI 助理的 MCP 設定檔（例如 `~/.gemini/config/mcp_config.json` 或本機 `mcp_config.json`），寫入以下 `obsidian` 設定：
+  ```json
+  {
+    "mcpServers": {
+      "obsidian": {
+        "command": "/opt/homebrew/bin/mcpvault",  // 若在 macOS Brew 環境，亦可使用 "mcpvault"
+        "args": ["/absolute/path/to/your/secondbrain"]
+      }
+    }
+  }
+  ```
+  *(請將 args 中的路徑替換為您在 Google Drive 本地同步掛載點底下的 `secondbrain` 實體絕對路徑)*
+
+### 5. 在 Obsidian 中開啟現有二腦
+- 啟動 **Obsidian** 筆記軟體。
+- 選擇 **「開啟現有倉庫 (Open folder as vault)」**，並指向已同步的二腦資料夾（例如 `~/Library/CloudStorage/.../secondbrain`）。
+- 確認過往所有的筆記、工作流程與專案駕駛艙在介面中成功加載。
+
+### 6. 登入 GitHub CLI
 ```powershell
 gh auth status
 gh auth login --web --git-protocol https
 gh auth status
 ```
 
-若登入流程卡住，請在可互動的終端機視窗完成瀏覽器授權，再回來驗證。
-
-### 設定 Git 使用者
-
-```powershell
-git config --global user.name "你的名字"
-git config --global user.email "your-email@example.com"
-```
-
-### 安全規則
-
-- GitHub 與 GitHub Copilot 是不同服務；本流程只需要 GitHub 帳號、Git、GitHub CLI。
+### 7. 安全規則
 - 不把 GitHub token 寫進 Markdown、AGENTS、Obsidian 對外筆記 or repo。
 - commit 前先檢查 diff，不要無差別提交。
 
 ---
 
-## 二、建置第二大腦與連接 Obsidian
+## 二、設定全域配置軟連結 (Symlink)
 
-### 找到與建立 Vault
+在步驟一的所有基礎軟體、MCP 註冊與二腦連線完成後，請執行設定腳本建立指向您雲端硬碟 `codex_symlink` 的全域軟連結。
 
-請先確認 Obsidian vault 的實體路徑。常見位置：
-
-```text
-/Users/<你>/Library/CloudStorage/GoogleDrive-.../我的雲端硬碟/secondbrain
-C:\Users\<你>\OneDrive\文件\Secondbrain
+### 執行設定腳本
+```bash
+./setup.sh
 ```
 
-本專案提供了一鍵設定腳本 `./setup.sh`，會在此路徑下為您自動建置以下必要目錄：
-- `Clippings/`
-- `知識庫/` (含 index.md 與 log.md)
-- `每日筆記/`
-- `Templates/`
-- `專案庫/`
+### 腳本執行互動填寫與對接邏輯：
+- **互動確認路徑**：腳本會動態偵測並讓您確認 Google Drive 掛載點中的 `codex_symlink` 與 `secondbrain` 目錄。
+- **Git 全域設定補全**：若 Git 全域 `user.name` 或 `user.email` 為空，提示輸入並自動寫入 `git config --global`（防止日後提交中斷）。
+- **Gemini API Key 安全配置**：互動提示輸入金鑰，自動建立並安全儲存至 `~/.codex/secrets/gemini_api_key`（權限 600，自動排除在 Git 之外，保證全域 API 可正常呼叫）。
+- **建立軟連結**：將全域 `skills`、`memories`、`AGENTS.md` 對接到 AI 助理載入路徑中（`~/.codex` 與 `~/.gemini/config`）。
 
-### 安裝 MCPVault
-
-要讓 AI agent 讀寫第二大腦，需安裝 `mcpvault`：
-
-```powershell
-npm install -g @bitbonsai/mcpvault
-```
-
-在 macOS 下，可執行 `which mcpvault` 取得其絕對路徑；Windows 常見路徑為：
-
-```text
-C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
-```
-
-### 註冊 Obsidian MCP
-
-在您的 AI 助理的 MCP 設定檔（例如 `mcp_config.json` 或 `~/.gemini/config/` 下的配置）中加入 Obsidian MCP：
-
-```json
-{
-  "mcp": {
-    "obsidian": {
-      "type": "local",
-      "command": [
-        "mcpvault",
-        "/absolute/path/to/your/secondbrain"
-      ],
-      "enabled": true
-    }
-  }
-}
-```
-
-完成後重啟 AI 助理，測試讀取二腦根目錄以驗證連線。
+*執行完成後，請重啟您的 AI 助理。此時 AI 助理重啟後，便能加載 `arry-assistant` 等全域技能，繼承跨專案記憶。*
 
 ---
 
-## 三、開工 / 收工 / 新專案初始化工作流程 (Symlinks 與自動化)
+## 三、對接與驗證第二大腦 (防覆寫保護)
 
-在執行 any 全域技能之前，**必須優先執行 `./setup.sh` 以建立軟連結 (Symlink) 指向 `codex_symlink`**。軟連結建立成功後，AI 助理才能在新電腦中自動載入以下兩個**互相呼應與關聯**的核心全域技能：
-- **個人助手設定 (`arry-assistant`)**：載入您的跨專案偏好、偏好記憶與個人助手資料層。
-- **專案初始化工作模式 (`project-init-sync`)**：建立標準雙層資料結構與工作規則。
+軟連結與全域技能載入後，接下來進行二腦對接驗證與本地專案初始化。
 
-此處建立的軟連結也同時對接了全域的生圖等技能，為後續測試與健檢提供必要基礎。
+### 1. 腳本防覆寫機制說明
+- **安全保護**：若偵測到您的 Obsidian Vault 中已存在檔案（即您已在步驟一中同步了已有二腦），此腳本將**僅更新全域核心規則至 Obsidian Vault 底下的 `AGENTS.md`，絕對不會替換或生成任何 `index.md`、`log.md` 等預設占位檔案**，以防覆蓋或損害您的過往記錄。若目錄為全新，才初始化建立結構。
 
-接著，即可安全地使用這些技能來執行開工、收工與新專案初始化。
+### 2. 專案本地層初始化
+- 腳本已在步驟二執行時，自動為此專案建立了本地的 `100_Todo` 和 `200_Reference` 目錄，您可以在本地直接使用。
 
-### 開工
-
-當您說「開工」時，AI 應：
-
-1. 讀取專案根目錄 the `AGENTS.md` 或同等規則檔。
-2. 讀取 Obsidian 專案駕駛艙。
-3. 執行 `git status` 與最近 commit 檢查。
-4. 回報目前狀態與建議下一步。
-5. 不自動 pull、commit 或 push。
-
-### 收工
-
-當您說「收工」時，AI 應：
-
-1. 檢查是否有敏感資料：API key、token、憑證、學生真名。
-2. 更新 Obsidian 專案駕駛艙：完成事項、下一步、踩坑。
-3. 只有固定規則或路徑改變時才更新 `AGENTS.md`。
-4. 執行 `git status` 與 diff 檢查.
-5. 只 stage 本次相關檔案，不使用無差別 `git add .`。
-6. 產生 commit message，確認後 commit / push。
-7. 回報 Obsidian、規則檔與 GitHub 同步結果。
-
-### 新專案初始化
-
-當您說「新專案初始化」時，AI 應先問清楚：
-
-- 專案名稱
-- 用途
-- 工作資料夾
-- 是否建立 GitHub repo
-- repo 公開或私有
-- 是否需要 GitHub Pages / 其他部署
-- Obsidian vault 與專案駕駛艙位置
-
-接著建立或補齊：
-- `AGENTS.md`
-- `README.md`
-- `.gitignore`
-- Git repo
-- Obsidian 專案駕駛艙
+### 3. 驗證 Obsidian MCP 連線與讀寫
+- 重啟 AI 助理後，在對話中要求 AI 助理讀取二腦根目錄（例如使用 `mcpvault` 讀取 `AGENTS.md`），以驗證 Obsidian MCP 連線是否暢通。
 
 ---
 
@@ -161,61 +116,24 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 - [ ] **FFmpeg 媒體工具**：多媒體編輯與影片渲染正常（供 `hyperframes`, `video-processing-automation` 等使用）。
 - [ ] **yt-dlp 下載器**：用於轉錄 YouTube 資訊（供 `youtube-transcript-collector` 使用）。
 - [ ] **mcpvault (Obsidian MCP) 狀態**：AI 能透過 MCP 成功讀寫二腦檔案。
-- [ ] **全域生圖功能 (`image-generator`)**：測試生圖功能正常。該技能直接呼叫 AI 助理的內建生圖工具，不需要配置 OpenAI API key，亦無須安裝額外的 CLI 或套件。
 - [ ] **個人 API 憑證安全**：API 金鑰安全存放於 `~/.codex/secrets/`（如 `gemini_api_key`）且已被排除在 Git 外。
 
 ### 2. 三方相容性校驗 (相容 Codex/AntiGravity，清除 Claude)
-- 複查「全域 Skill 文檔 (`codex_symlink/skills`)」、「LazyPack 安裝檔 (本專案 `01-antigravity-lazypack.md`)」與「Obsidian 知識庫/駕駛艙」這三者：
+- 複查「全域 Skill 文檔 (`codex_symlink/skills`)」、「LazyPack 本手冊 (`01-antigravity-lazypack.md`)」與「Obsidian 知識庫/駕駛艙」這三者：
   - 確認皆相容於 Codex 或 AntiGravity 的設定與路徑。
-  - **徹底清除所有舊有 Claude 相關字眼與殘留設定** (例如移除對舊 `CLAUDE.md` 的引用或排除 Claude 的提示語)。
+  - **徹底清除所有舊有 Claude 相關字眼與殘留設定**。
   - 確保這三者的核心內容與路徑是 100% 同步且一致的。
 
 ### 3. 沙盒限制排除
-- 執行健檢或操作時，若遇到 AI 助理沙盒寫入/讀取限制，**必須立刻修改配置，將該限制路徑新增到沙盒規則中**（例如修改 `~/.codex/config.toml` 或 `~/.gemini/config/` 中的 `writable_roots` 或是 sandbox paths）。**特別是 PIP、NPM、Python 及其相關的實體路徑（如 `~/.npm/`, `~/.pip/`, 以及 Python 與 Node.js 的全局二進位執行檔路徑、環境資料夾與專案工作目錄），都必須被完整列為沙盒排除項目，以確保這些指令、相依庫安裝以及指令調用都能直接、無礙地執行。**
+- 執行健檢或操作時，若遇到 AI 助理沙盒寫入/讀取限制，**必須立刻修改配置，將該限制路徑新增到沙盒規則中**（例如修改本機 `config.toml` 或 AI 助理配置中的 `writable_roots` ）。**特別是 PIP、NPM、Python 及其相關的實體路徑（如 `~/.npm/`, `~/.pip/`, 以及 Python 與 Node.js 的全局二進位執行檔路徑、環境資料夾與專案工作目錄），都必須被完整列為沙盒排除項目，以確保這些指令、相依庫安裝以及指令調用都能直接、無礙地執行。**
 
 ### 4. 疑難排解與參考資料
-- **如果在執行本章節或上述步驟時遇到任何環境、連線、模組或權限問題，請直接參考 `Github Codex Installation 的 lazy pack 路徑` 下的對應文件進行排查與恢復。此專案中所有的技能皆已完整寫入該安裝 Repo 下的整個 `lazy-pack` 資料夾（對應本地路徑：[codex_installation/lazy-pack](file:///Users/arrywu/Library/CloudStorage/GoogleDrive-icestone0128@gmail.com/我的雲端硬碟/codex_installation/lazy-pack/)）。您可以回到該目錄下尋求所有對應安裝檔與修復說明。**
+- **如果在執行本步驟或懶人包引導時遇到任何環境、連線、模組或權限問題，請直接參考 GitHub 上的公開說明。本專案中所有技能皆與 Codex Installation 專案的懶人包設計相呼應。您可以隨時回到其 GitHub 遠端倉庫 the `lazy-pack` 目錄尋求完整的設定檔與疑難排解指引：**
+  - [GitHub Codex Installation - lazy-pack 目錄](https://github.com/icestone0128/codex-installation/tree/main/lazy-pack)
 
 ---
 
-## 建議的 AGENTS.md 範本
-
-```markdown
-# <專案名稱> - AGENTS.md
-
-## 專案入口
-
-專案名稱：
-專案用途：
-主要工作目錄：
-GitHub repo：
-預設 branch：
-
-## Obsidian 對應筆記
-
-Obsidian vault：
-專案駕駛艙：
-
-## 工作規則
-
-- 回應使用繁體中文。
-- 涉及檔案操作時回報完整產出位置。
-- 使用 zsh 語法。
-- 開工時讀本檔、讀 Obsidian 駕駛艙、檢查 Git 狀態。
-- 收工時更新 Obsidian，必要時更新本檔，檢查 diff 後只提交相關檔案。
-- 不把每日流水帳寫進本檔。
-
-## 不要做
-
-- 不要 commit API key、token、密碼、Firebase Admin 憑證。
-- 不要 commit NotebookLM 個人匯出清單或筆記本 ID 清單。
-- 不要自動納入無關 git 變更。
-- 不要儲存學生真名；正式資料只用班級代號與座號。
-```
-
----
-
-## 完成回報格式
+## 五、完成回報格式
 
 ```markdown
 ## Anti-Gravity 懶人包設定完成
@@ -232,10 +150,8 @@ Obsidian vault：
   - FFmpeg (多媒體)：[通過 / 失敗]
   - yt-dlp (YouTube)：[通過 / 失敗]
   - mcpvault：[通過 / 失敗]
-  - image-generator (生圖)：[通過 / 失敗]
   - API secrets 安全：[通過 / 失敗]
 - 三方相容性 (移除 Claude/路徑同步)：已完成 / 失敗
 - 規則檔：AGENTS.md 已建立 / 已更新 / 未建立
-- Git 狀態：乾淨 / 有未提交變更
-- 下一步：
+- Git 狀態：[乾淨 / 有未提交變更]
 ```
