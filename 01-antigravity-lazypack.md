@@ -1,12 +1,12 @@
 # Anti-Gravity 懶人包 #01：服務連接與工作流程設定
 
-> 版本：v1.8
+> 版本：v2.0
 > 更新日期：2026-06-24
 > 語系偏好：繁體中文（Taiwan）
 
-這份懶人包的目標，是讓 Anti-Gravity 使用者能安全連接 GitHub 與 Obsidian，並建立「開工 / 收工 / 新專案初始化」工作流程。NotebookLM 與 Firebase 的連線已由全域配置接管，本指引不重複設定。
+這份懶人包的目標，是讓 Anti-Gravity 使用者能在乾淨的電腦上快速且安全地連接 GitHub 與 Obsidian，並建立「開工 / 收工 / 新專案初始化」工作流程。NotebookLM 與 Firebase 的連線已由全域配置接管，本指引不重複設定。
 
-本文件只放可公開教學的設定流程，不放 any 個人帳號 token、密碼或敏感測試專案資訊。
+本文件只放可公開教學的設定流程，不放任何個人帳號 token、密碼或敏感測試專案資訊。
 
 ---
 
@@ -16,7 +16,8 @@
 - [ ] 已安裝 Git
 - [ ] 已安裝 GitHub CLI（`gh`）
 - [ ] 已安裝 Node.js / npm
-- [ ] 已安裝 Python 或 `uv`
+- [ ] 已安裝 Python 3 或 `uv`
+- [ ] 已安裝 **FFmpeg** (全域多媒體與影片渲染技能的必要依賴)
 - [ ] 有 GitHub 帳號
 - [ ] 知道 Obsidian 筆記本 (Vault) 的預計存放路徑 (腳本將會自動為您建置結構)
 
@@ -28,6 +29,7 @@ gh --version
 node --version
 npm.cmd --version
 python --version
+ffmpeg -version
 ```
 
 ### 快速自動化環境建置 (macOS / Linux)
@@ -66,7 +68,7 @@ git config --global user.email "your-email@example.com"
 ### 安全規則
 
 - GitHub 與 GitHub Copilot 是不同服務；本流程只需要 GitHub 帳號、Git、GitHub CLI。
-- 不把 GitHub token 寫進 Markdown、AGENTS、Obsidian 對外筆記或 repo。
+- 不把 GitHub token 寫進 Markdown、AGENTS、Obsidian 對外筆記 or repo。
 - commit 前先檢查 diff，不要無差別提交。
 
 ---
@@ -181,9 +183,7 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 
 ## 四、生圖
 
-在前一步驟中執行 `./setup.sh` 建立軟連結後，全域的生圖技能（如 `image-generator`）已掛載完成，此時 AI 助理即可正常使用生圖功能。
-
-如果 AI 內建生圖工具，可直接用自然語言產生圖片，不需要把 OpenAI API key 寫進 repo。
+在步驟三執行 `./setup.sh` 建立軟連結後，全域的生圖技能（如 `image-generator`）已掛載完成。由於該技能為全域共用技能，且**直接呼叫 AI 助理的內建生圖工具，因此不需要配置 OpenAI API key，亦無須安裝額外的 CLI 或套件**。此時 AI 助理即可直接使用生圖功能進行測試。
 
 建議提示格式：
 
@@ -208,10 +208,19 @@ C:\Users\<你>\AppData\Roaming\npm\mcpvault.cmd
 
 ## 五、全域技能健檢與三方同步驗證 (必要步驟)
 
-為了確保 AI Agent 在第二台電腦上擁有完整且無障礙的工作能力，AI 助理在設定完成後**必須執行以下健檢與三方同步驗證**：
+為了確保 AI Agent 在第二台電腦上擁有完整且無障礙的工作能力，AI 助理在設定完成後**必須執行以下依賴健檢與三方同步驗證**：
 
-### 1. 驗證全域 Skills/MCP/CLI 可用性
-- 掃描全域所有 Skill (`~/.codex/skills/` 或 `~/.gemini/config/plugins/codex/skills/`)，確認其中提及的所有 plug-in、API、MCP、CLI 均已安裝並可正常連線與呼叫。
+### 1. 驗證全域 Skills / MCP / CLI 依賴可用性
+掃描並確認以下全域技能提及的核心依賴已正確安裝與配置：
+- [ ] **GitHub CLI (`gh`) 狀態**：可用於 repo 同步與 PR 建立（供 `contribute-catalog`, `project-init-sync` 等使用）。
+- [ ] **Node.js 與 npm 環境**：供執行 `mcpvault` 與前端套件建置。
+- [ ] **Playwright 瀏覽器截圖環境**：可正常開啟無頭瀏覽器（供 `playwright`, `social-cards` 等使用）。
+- [ ] **Python 3 與 pip 環境**：供執行備份指令與文字/轉換腳本。
+- [ ] **Poppler / pdfplumber 工具**：可用於 PDF 渲染與資訊提取（供 `pdf`, `doc-to-md` 等使用）。
+- [ ] **FFmpeg 媒體工具**：多媒體編輯與影片渲染正常（供 `hyperframes`, `video-processing-automation` 等使用）。
+- [ ] **yt-dlp 下載器**：用於轉錄 YouTube 資訊（供 `youtube-transcript-collector` 使用）。
+- [ ] **mcpvault (Obsidian MCP) 狀態**：AI 能透過 MCP 成功讀寫二腦檔案。
+- [ ] **個人 API 憑證安全**：API 金鑰安全存放於 `~/.codex/secrets/`（如 `gemini_api_key`）且已被排除在 Git 外。
 
 ### 2. 三方相容性校驗 (相容 Codex/AntiGravity，清除 Claude)
 - 複查「全域 Skill 文檔 (`codex_symlink/skills`)」、「LazyPack 安裝檔 (本專案 `01-antigravity-lazypack.md`)」與「Obsidian 知識庫/駕駛艙」這三者：
@@ -275,7 +284,17 @@ Obsidian vault：
 - GitHub：已登入 / 待登入 / 失敗
 - Obsidian：已連接 / 待設定 / 失敗
 - 全域 Symlinks 與載入 (arry-assistant, project-init-sync)：已完成 / 失敗
-- 全域 Skills / MCP / CLI 健檢：已通過 / 有問題
+- 生圖功能驗證：已測試通過 / 失敗
+- 全域 Skills / MCP / CLI 健檢：
+  - GitHub CLI (gh)：[通過 / 失敗]
+  - Node.js & npm：[通過 / 失敗]
+  - Playwright：[通過 / 失敗]
+  - Python 3 & pip：[通過 / 失敗]
+  - Poppler (PDF)：[通過 / 失敗]
+  - FFmpeg (多媒體)：[通過 / 失敗]
+  - yt-dlp (YouTube)：[通過 / 失敗]
+  - mcpvault：[通過 / 失敗]
+  - API secrets 安全：[通過 / 失敗]
 - 三方相容性 (移除 Claude/路徑同步)：已完成 / 失敗
 - 規則檔：AGENTS.md 已建立 / 已更新 / 未建立
 - Git 狀態：乾淨 / 有未提交變更
