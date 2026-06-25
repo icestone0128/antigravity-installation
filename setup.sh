@@ -298,6 +298,9 @@ if [ -d "$USER_SYM_ROOT/knowledge" ]; then
     "subagent-strategy.md"
     "parallelization-strategy.md"
     "advanced-memory-learning.md"
+    "prompt-defense-baseline.md"
+    "security-review-checklist.md"
+    "coding-standards.md"
   )
   
   for tfile in "${TEMPLATE_FILES[@]}"; do
