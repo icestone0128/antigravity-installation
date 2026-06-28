@@ -78,6 +78,6 @@ def register_obsidian_mcp(vault_path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("用法: python3 register_mcp.py <Obsidian_Vault_實體路徑>")
+        print("用法: python3 200_Reference/scripts/register_mcp.py <Obsidian_Vault_實體路徑>")
         sys.exit(1)
     register_obsidian_mcp(sys.argv[1])
